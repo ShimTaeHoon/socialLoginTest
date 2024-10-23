@@ -1,5 +1,6 @@
 package com.example.sociallogintest.config;
 
+import com.example.sociallogintest.security.handler.LoginSuccessHandler;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -28,8 +29,10 @@ public class SecurityConfig {
                     auth.requestMatchers("/sample/all").permitAll()
                             // 모든 사용자가 접근할 수 있는 경로
                             .requestMatchers("/sample/member").permitAll()
+//                            .requestMatchers("/sample/member").hasRole("USER")
                             // OAuth2 관련 요청은 모두 허용
                             .requestMatchers("/oauth2/**").permitAll()
+//                            .requestMatchers("/oauth2/**").hasRole("USER")
                             // 나머지 요청은 인증 필요
                             .anyRequest().authenticated();
                 })
@@ -54,6 +57,7 @@ public class SecurityConfig {
                 .loginPage("/login")
                 .defaultSuccessUrl("/sample/member") // 로그인 성공 후 리다이렉션URL
                 .failureUrl("/login?error")
+                .successHandler(successHandler()) // 로그인 성공시 핸들러
         );
 
 /*        http.oauth2Login(oauth2 -> {
@@ -64,5 +68,10 @@ public class SecurityConfig {
 //                .successHandler(new CustomAuthenticationSuccessHandler());
 
         return http.build();
+    }
+
+    @Bean
+    public LoginSuccessHandler successHandler(){
+        return new LoginSuccessHandler(passwordEncoder());
     }
 }

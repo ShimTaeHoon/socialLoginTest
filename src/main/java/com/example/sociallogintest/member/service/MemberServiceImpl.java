@@ -20,11 +20,11 @@ public class MemberServiceImpl implements MemberService {
     @Override
     public Member registerMember(MemberDTO memberDTO) {
 
-        if (memberRepository.existsById(memberDTO.getId())) {
-            throw new RuntimeException("이미 사용 중인 ID입니다.");
-        } else if (memberRepository.existsById(memberDTO.getEmail())){
-            throw new RuntimeException("이미 사용중인 이메일입니다.");
-        }
+//        if (memberRepository.existsById(memberDTO.getId())) {
+//            throw new RuntimeException("이미 사용 중인 ID입니다.");
+//        } else if (memberRepository.existsById(memberDTO.getEmail())){
+//            throw new RuntimeException("이미 사용중인 이메일입니다.");
+//        }
 
         Member member = Member.builder()
 //                .id(memberDTO.getId())

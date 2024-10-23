@@ -3,7 +3,6 @@ package com.example.sociallogintest;
 import com.example.sociallogintest.member.entity.Member;
 import com.example.sociallogintest.member.entity.MemberRole;
 import com.example.sociallogintest.member.repository.MemberRepository;
-import com.example.sociallogintest.member.service.MemberService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -25,10 +24,10 @@ public class MemberTests {
     public void insertDummyMembers() {
         IntStream.rangeClosed(1, 100).forEach(i -> {
             Member member = Member.builder()
-                    .id("user" + i)
+                    .id(i)
                     .email("user" + i + "@example.com")
                     .name("사용자" + i)
-                    .password(passwordEncoder.encode("password" + i)) // 비밀번호 암호화
+                    .password(passwordEncoder.encode("1111")) // 비밀번호 암호화
                     .phone("010-1234-56" + (i < 10 ? "0" + i : i)) // 전화번호 포맷
                     //소셜 로그인 회원 (fromSocial = true)
                     .fromSocial(false) // 일반 회원
@@ -54,7 +53,7 @@ public class MemberTests {
     @Test
     public void insertDummyOne() {
         Member member = Member.builder()
-                .id("user777")
+                .id(777)
                 .email("user777@example.com")
                 .name("사용자777")
                 .password("1111") // 비밀번호 암호화

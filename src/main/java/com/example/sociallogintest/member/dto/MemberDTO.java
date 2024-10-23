@@ -12,7 +12,9 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class MemberDTO {
 
-    private String id;
+//    private String id;
+
+    private int id;
 
     private String password;
 
@@ -31,7 +33,6 @@ public class MemberDTO {
     private LocalDateTime createDate;
 
     private LocalDateTime updateDate;
-
 
 }
 

@@ -2,11 +2,13 @@ package com.example.sociallogintest.member.entity;
 
 import com.example.sociallogintest.common.BaseEntity;
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.HashSet;
 import java.util.Set;
-import java.util.UUID;
 
 @Table(name = "member")
 @Data
@@ -16,9 +18,13 @@ import java.util.UUID;
 @Builder
 public class Member extends BaseEntity {
 
+//    @Id
+//    @Column(name = "id", length = 36, nullable = false)
+//    private String id; // UUID를 String으로 저장
+
     @Id
-    @Column(name = "id", length = 36, nullable = false)
-    private String id; // UUID를 String으로 저장
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private int id;
 
     @Column(name = "password", length = 255, nullable = false)
     private String password;
