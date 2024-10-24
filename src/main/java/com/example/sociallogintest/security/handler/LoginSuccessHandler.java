@@ -29,24 +29,18 @@ public class LoginSuccessHandler implements AuthenticationSuccessHandler {
 
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
-        log.info("-----------------------");
         log.info("onAuthenticationSuccess");
-
         AuthMemberDTO authMember = (AuthMemberDTO) authentication.getPrincipal();
         boolean fromSocial = authMember.isFromSocial();
 
         log.info("Need Modify Member? " + fromSocial);
-        log.info("AuthMemberDTO: " + authMember); // 추가된 로그
-
         Member member = memberRepository.findByEmail(authMember.getEmail(), fromSocial).orElse(null);
-        log.info("Member: " + member); // 추가된 로그
 
-        if (member == null) {
-            redirectStrategy.sendRedirect(request, response, "/member/socialRegister?email=" + authMember.getEmail() + "&name=" + authMember.getName());
-        } else if (fromSocial) {
+        if (member == null || fromSocial) {
             redirectStrategy.sendRedirect(request, response, "/member/socialRegister?email=" + authMember.getEmail() + "&name=" + authMember.getName());
         } else {
-            boolean passwordResult = passwordEncoder.matches("1111", member.getPassword());
+            // 비밀번호 체크 로직은 실제 비밀번호 사용으로 변경
+            boolean passwordResult = passwordEncoder.matches("작성한 비밀번호", member.getPassword());
             if (passwordResult) {
                 redirectStrategy.sendRedirect(request, response, "/member/modify");
             } else {
@@ -55,3 +49,31 @@ public class LoginSuccessHandler implements AuthenticationSuccessHandler {
         }
     }
 }
+//    @Override
+//    public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
+//        log.info("-----------------------");
+//        log.info("onAuthenticationSuccess");
+//
+//        AuthMemberDTO authMember = (AuthMemberDTO) authentication.getPrincipal();
+//        boolean fromSocial = authMember.isFromSocial();
+//
+//        log.info("Need Modify Member? " + fromSocial);
+//        log.info("AuthMemberDTO: " + authMember); // 추가된 로그
+//
+//        Member member = memberRepository.findByEmail(authMember.getEmail(), fromSocial).orElse(null);
+//        log.info("Member: " + member); // 추가된 로그
+//
+//        if (member == null) {
+//            redirectStrategy.sendRedirect(request, response, "/member/socialRegister?email=" + authMember.getEmail() + "&name=" + authMember.getName());
+//        } else if (fromSocial) {
+//            redirectStrategy.sendRedirect(request, response, "/member/socialRegister?email=" + authMember.getEmail() + "&name=" + authMember.getName());
+//        } else {
+//            boolean passwordResult = passwordEncoder.matches("1111", member.getPassword());
+//            if (passwordResult) {
+//                redirectStrategy.sendRedirect(request, response, "/member/modify");
+//            } else {
+//                redirectStrategy.sendRedirect(request, response, "/sample/member");
+//            }
+//        }
+//    }
+

@@ -23,6 +23,7 @@ public class MemberController {
     private final MemberRepository memberRepository;
     private final PasswordEncoder passwordEncoder;
     private final MemberOAuth2UserDetailsService memberOAuth2UserDetailsService;
+    Member member;
 
     // 소셜 로그인 후 사용자 입력 페이지 표시
     @GetMapping("/member/socialRegister")
@@ -39,7 +40,9 @@ public class MemberController {
                                  @RequestParam String phone,
                                  @RequestParam String email,
                                  @RequestParam String name) {
-        // 회원가입 처리
+
+        log.info("비밀번호 암호화 방식: " + passwordEncoder.getClass().getSimpleName());
+
         Member member = new Member();
         member.setId(id);
         member.setEmail(email); // Google에서 제공된 이메일
@@ -53,6 +56,7 @@ public class MemberController {
         memberRepository.save(member);
 
         log.info("Registered new member: " + member);
+        log.info("회원가입 완료 후 로그인 시도: " + email);
 
         // 회원가입 완료 후 리다이렉트
         return "redirect:/login"; // 로그인 페이지로 리다이렉트

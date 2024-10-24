@@ -8,7 +8,7 @@ import java.util.List;
 public interface MemberService {
 
     // 회원가입
-    Member registerMember(MemberDTO memberDTO);
+    Member registerMember(Member member);
 
     // 회원 정보 수정
 
@@ -26,19 +26,31 @@ public interface MemberService {
     // 회원 목록 가져오기
     List<MemberDTO> getList();
 
-    // 엔티티를 DTO로 변환
+    // DTO에서 엔티티로 변환
+    default Member dtoToEntity(MemberDTO memberDTO) {
+        return Member.builder()
+                .id(memberDTO.getId())
+                .password(memberDTO.getPassword())
+                .name(memberDTO.getName())
+                .email(memberDTO.getEmail())
+                .phone(memberDTO.getPhone())
+                .profilePhotoUrl(memberDTO.getProfilePhotoUrl())
+                .role(memberDTO.getRole())
+                .score(memberDTO.getScore())
+                .build();
+    }
+
+    // 엔티티에서 DTO로 변환
     default MemberDTO entityToDto(Member entity) {
         return MemberDTO.builder()
-//                .id(entity.getId())
+                .id(entity.getId())
                 .password(entity.getPassword())
                 .name(entity.getName())
                 .email(entity.getEmail())
                 .phone(entity.getPhone())
                 .role(entity.getRole())
-                .score(entity.getScore())
                 .profilePhotoUrl(entity.getProfilePhotoUrl())
-                .createDate(entity.getCreateDate())
-                .updateDate(entity.getUpdateDate())
+                .score(entity.getScore())
                 .build();
     }
 

@@ -2,8 +2,10 @@ package com.example.sociallogintest.member.service;
 
 import com.example.sociallogintest.member.dto.MemberDTO;
 import com.example.sociallogintest.member.entity.Member;
+import com.example.sociallogintest.member.entity.MemberRole;
 import com.example.sociallogintest.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -15,28 +17,19 @@ import java.util.stream.Collectors;
 public class MemberServiceImpl implements MemberService {
 
     private final MemberRepository memberRepository;
+    private final PasswordEncoder passwordEncoder; // PasswordEncoder 주입
 
     // 회원가입
     @Override
-    public Member registerMember(MemberDTO memberDTO) {
+    public Member registerMember(Member member) {
+        // 비밀번호 암호화
+        String encodedPassword = passwordEncoder.encode(member.getPassword());
+        member.setPassword(encodedPassword); // 암호화된 비밀번호로 설정
 
-//        if (memberRepository.existsById(memberDTO.getId())) {
-//            throw new RuntimeException("이미 사용 중인 ID입니다.");
-//        } else if (memberRepository.existsById(memberDTO.getEmail())){
-//            throw new RuntimeException("이미 사용중인 이메일입니다.");
-//        }
+        // 기본 역할 추가
+        member.setRole(String.valueOf(MemberRole.USER));
 
-        Member member = Member.builder()
-//                .id(memberDTO.getId())
-                .password(memberDTO.getPassword())
-                .name(memberDTO.getName())
-                .email(memberDTO.getEmail())
-                .phone(memberDTO.getPhone())
-                .role("ROLE_USER")
-                .score(0.0) // 점수는 항상 0으로 초기화
-                .profilePhotoUrl("")
-                .build();
-
+        // 엔티티 저장
         return memberRepository.save(member);
     }
 
