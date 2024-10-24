@@ -69,6 +69,7 @@ public class SecurityConfig {
 
 //        http.oauth2Login()
 //                .successHandler(new CustomAuthenticationSuccessHandler());
+        //
 
         http.rememberMe(rem -> {
                     rem.rememberMeParameter("remember");
