@@ -45,22 +45,29 @@ public class MemberOAuth2UserDetailsService extends DefaultOAuth2UserService {
         });
 
         String email = null;
-        String phone = "구글소셜로그인";
+        String phone = "구글소셜로그인"; // 기본 전화번호
+        String id = ""; // 사용자 입력 ID
+        String name = ""; // 사용자 이름
+        String password = "1111"; // 비밀번호 초기값
+
         // Google 사용자 정보에서 phone을 가져오지 않으므로, 기본값 사용
         // 실제로 전화번호를 가져오고 싶다면 추가적인 API 요청이 필요합니다.
-
-        if(clientName.equals("Google")) {
+        if (clientName.equals("Google")) {
             email = oAuth2User.getAttribute("email");
+            name = oAuth2User.getAttribute("name"); // 이름 가져오기
         }
 
-        log.info("email: " + email);
-        log.info("phone: " + phone);
+        log.info("User attributesZZZ: " + oAuth2User.getAttributes());
+        log.info("nameZZZ: " + name);
+        log.info("emailZZZ: " + email);
+        log.info("phoneZZZ: " + phone);
 
 //        Member member = saveSocialMember(email, phone);
 //
 //        return oAuth2User;
 
-        Member member = saveSocialMember(email, phone);
+        // 회원가입처리
+        Member member = saveSocialMember(email, phone, id, password, name);
 
         AuthMemberDTO AuthMember = new AuthMemberDTO(
                 member.getEmail(),
@@ -77,7 +84,7 @@ public class MemberOAuth2UserDetailsService extends DefaultOAuth2UserService {
 
     }
 
-    private Member saveSocialMember(String email, String phone) {
+    public Member saveSocialMember(String email, String phone, String id, String password, String name) {
 
         // 기존에 동일한 이메일로 가입한 회원이 있는 경우에는 그대로 조회만
         Optional<Member> result = repository.findByEmail(email, true);
@@ -89,16 +96,21 @@ public class MemberOAuth2UserDetailsService extends DefaultOAuth2UserService {
         }
 
         // 없다면 회원 추가 패스워드는 1111 이름은 그냥 이메일 주소로
-        Member member = Member.builder().email(email)
-                .name(email)
-                .password(passwordEncoder.encode("1111")) // 임시비밀번호
+        Member member = Member.builder()
+                .id(id)
+                .email(email)
+                .name(name)
+//                .password(passwordEncoder.encode("1111")) // 임시비밀번호
+                .password(passwordEncoder.encode(password))
                 .phone(phone) // 전화번호 추가
                 .fromSocial(true)
+                .role("USER")
                 .build();
 
         member.addMemberRole(MemberRole.USER); // 임시 권한
 
         log.info("User roles: " + member.getRole()); // 성민이꺼라 role은 null.
+        log.info("Assigned roles: " + member.getRoleSet());
 
         repository.save(member);
 

@@ -18,13 +18,12 @@ import java.util.Set;
 @Builder
 public class Member extends BaseEntity {
 
-//    @Id
-//    @Column(name = "id", length = 36, nullable = false)
-//    private String id; // UUID를 String으로 저장
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private int userNo;
+
+    @Column(name = "id", length = 36, nullable = false, unique = true)
+    private String id;
 
     @Column(name = "password", length = 255, nullable = false)
     private String password;

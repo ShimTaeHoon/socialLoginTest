@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>회원가입</title>
+</head>
+<body>
+<h1>소셜 회원가입</h1>
+<form th:action="@{/socialRegister}" method="post">
+  <label for="id">아이디:</label>
+  <input type="text" id="id" name="id" required>
+
+  <label for="password">비밀번호:</label>
+  <input type="password" id="password" name="password" required>
+
+  <label for="phone">전화번호:</label>
+  <input type="text" id="phone" name="phone" required>
+
+  <input type="hidden" id="email" name="email" th:value="${email}">
+  <input type="hidden" id="name" name="name" th:value="${name}">
+
+  <button type="submit">회원가입</button>
+</form>
+</body>
+</html>

@@ -69,14 +69,13 @@ public class MemberTests {
 
     @Test
     public void testRead() {
-
         Optional<Member> result = repository.findByEmail("user10@example.com", false);
 
-        Member member = result.get();
-
-        System.out.println(member);
-
+        if (result.isPresent()) {
+            Member member = result.get();
+            System.out.println(member.getName()); // 여기서 name을 출력해 확인
+        } else {
+            System.out.println("회원 정보를 찾을 수 없습니다.");
+        }
     }
-
-
 }

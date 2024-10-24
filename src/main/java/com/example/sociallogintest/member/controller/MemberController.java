@@ -4,6 +4,7 @@ import com.example.sociallogintest.member.entity.Member;
 import com.example.sociallogintest.member.repository.MemberRepository;
 import com.example.sociallogintest.security.dto.AuthMemberDTO;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
@@ -11,6 +12,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 
+@Log4j2
 @Controller
 @RequiredArgsConstructor
 public class MemberController {
@@ -18,24 +20,74 @@ public class MemberController {
     private final MemberRepository memberRepository;
     private final PasswordEncoder passwordEncoder;
 
-    // 수정페이지
+    // 수정 페이지 (일반 및 소셜 회원 모두 처리)
     @GetMapping("/member/modify")
     public String showModifyPage(Authentication authentication, Model model) {
-        AuthMemberDTO authMember = (AuthMemberDTO) authentication.getPrincipal();
-        model.addAttribute("member", authMember);
+        Object principal = authentication.getPrincipal();
+        Member member;
 
-         Member member = memberRepository.findByEmail(authMember.getEmail(),true)
-                 .orElseThrow(() -> new IllegalArgumentException("회원 정보를 찾을 수 없습니다."));
+        AuthMemberDTO authMember = (AuthMemberDTO) principal;
 
-         model.addAttribute("member", member);
-        return "member/modify";
+        boolean fromSocial = authMember.isFromSocial();
+
+        // authentication : 이 객체는 현재 인증 상태와 관련된 정보를 담고 있습니다. 보통 로그인한 사용자의 세션이나 인증 정보를 포함
+        // getPrincipal() :  메서드는 인증된 사용자의 주체(principal) 정보를 반환합니다. 반환되는 주체는 보통 사용자 이름, ID,
+        // 또는 사용자 정보를 담고 있는 객체(예: UserDetails 또는 그에 상응하는 DTO)
+        if (!fromSocial) {
+            // 일반 회원 처리
+//            MemberDTO memberDTO = (MemberDTO) principal;
+//            log.info("ddddd: {}", memberDTO);
+//            log.info("Searching member by email (normal): {}", memberDTO.getEmail());
+
+            member = memberRepository.findByEmail(authMember.getEmail(), false)
+                    .orElseThrow(() -> new IllegalArgumentException("회원 정보를 찾을 수 없습니다."));
+
+            model.addAttribute("member", member);
+            model.addAttribute("isSocialMember", false); // 일반 회원임을 표시
+
+//            log.info("Loaded memberZZZ: {}", member);
+//            log.info("Searching member by emailZZZ: {}", memberDTO.getEmail());
+//            log.info("EmailZZZ: {}", memberDTO.getEmail()); // 이 줄을 추가
+//            log.info("Principal classZZZ: {}", memberDTO.getName());
+//            log.info("User emailZZZ: {}", memberDTO.getEmail());
+//            log.info("User is socialZZZ: {}", false);
+//            log.info("Principal class: {}", principal.getClass().getName());
+
+        } else if (principal instanceof AuthMemberDTO) {
+            // 소셜 로그인 회원 처리
+//            AuthMemberDTO authMember = (AuthMemberDTO) principal;
+            log.info("Searching member by email (social): {}", authMember.getEmail());
+            member = memberRepository.findByEmail(authMember.getEmail(), true)
+                    .orElseThrow(() -> new IllegalArgumentException("회원 정보를 찾을 수 없습니다."));
+            model.addAttribute("member", member);
+            model.addAttribute("isSocialMember", true); // 소셜 회원임을 표시
+        } else {
+            throw new IllegalArgumentException("회원 정보를 찾을 수 없습니다.");
+        }
+
+        return "member/modify"; // 수정 페이지로 이동
     }
 
-    // 수정
     @PostMapping("/member/update")
     public String updateMember(Authentication authentication, String name, String password) {
-        AuthMemberDTO authMember = (AuthMemberDTO) authentication.getPrincipal();
-        Member member = memberRepository.findByEmail(authMember.getEmail(), true).orElseThrow();
+        Object principal = authentication.getPrincipal();
+        Member member;
+
+        // AuthMemberDTO로 principal을 형변환
+        AuthMemberDTO authMember = (AuthMemberDTO) principal;
+
+        // 소셜 로그인 여부 확인
+        boolean fromSocial = authMember.isFromSocial();
+
+        if (!fromSocial) {
+            // 일반 회원 처리
+            member = memberRepository.findByEmail(authMember.getEmail(), false)
+                    .orElseThrow(() -> new IllegalArgumentException("회원 정보를 찾을 수 없습니다."));
+        } else {
+            // 소셜 로그인 회원 처리
+            member = memberRepository.findByEmail(authMember.getEmail(), true)
+                    .orElseThrow(() -> new IllegalArgumentException("회원 정보를 찾을 수 없습니다."));
+        }
 
         // 이름 수정
         member.setName(name);
@@ -45,8 +97,11 @@ public class MemberController {
             member.setPassword(passwordEncoder.encode(password));
         }
 
+        // 변경된 회원 정보 저장
         memberRepository.save(member);
-        return "redirect:/sample/member"; // 수정 완료 후 리다이렉트
+
+        // 수정 완료 후 리다이렉트
+        return "redirect:/sample/member";
     }
 }
 

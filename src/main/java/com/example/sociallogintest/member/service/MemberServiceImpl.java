@@ -52,11 +52,11 @@ public class MemberServiceImpl implements MemberService {
     // 회원 정보 반환(마이페이지)
     @Override
     public MemberDTO memberInfo(String id) {
-        Optional<Member> optional = memberRepository.selectById(id);
-        if (optional.isPresent()) {
-            Member member = optional.get();
-            return entityToDto(member);
-        }
+//        Optional<Member> optional = memberRepository.selectById(id);
+//        if (optional.isPresent()) {
+//            Member member = optional.get();
+//            return entityToDto(member);
+//        }
         return null;
     }
 
