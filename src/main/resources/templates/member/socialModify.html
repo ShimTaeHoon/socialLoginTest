@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+  <meta charset="UTF-8">
+  <title>회원 정보 수정(소셜)</title>
+</head>
+<body>
+<h1>회원 정보 수정</h1>
+
+<form action="/member/update" method="post">
+  <div>
+    <label for="name">이름을 설정하세요.</label>
+    <input type="text" id="name" name="name" th:value="${member.name}" required>
+  </div>
+  <div>
+    <label for="password">비밀번호:</label>
+    <input type="password" id="password" name="password">
+    <small>비밀번호를 변경하려면 입력하세요.</small>
+  </div>
+  <div>
+    <button type="submit">수정하기</button>
+  </div>
+</form>
+
+<div>
+  <a href="/sample/member">뒤로가기</a>
+</div>
+
+<div>
+  <p th:if="${param.success != null}">수정이 완료되었습니다.</p>
+</div>
+</body>
+</html>
