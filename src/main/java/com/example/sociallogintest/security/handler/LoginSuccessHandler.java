@@ -1,5 +1,7 @@
 package com.example.sociallogintest.security.handler;
 
+import com.example.sociallogintest.member.entity.Member;
+import com.example.sociallogintest.member.repository.MemberRepository;
 import com.example.sociallogintest.security.dto.AuthMemberDTO;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -15,37 +17,41 @@ import java.io.IOException;
 
 @Log4j2
 public class LoginSuccessHandler implements AuthenticationSuccessHandler {
-// 로그인 성공이후 처리를 위한 Handler
 
     private RedirectStrategy redirectStrategy = new DefaultRedirectStrategy();
-
     private PasswordEncoder passwordEncoder;
+    private MemberRepository memberRepository;
 
-    public LoginSuccessHandler(PasswordEncoder passwordEncoder) {
+    public LoginSuccessHandler(PasswordEncoder passwordEncoder, MemberRepository memberRepository) {
         this.passwordEncoder = passwordEncoder;
+        this.memberRepository = memberRepository;
     }
 
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
-
         log.info("-----------------------");
         log.info("onAuthenticationSuccess");
 
-        AuthMemberDTO authMember = (AuthMemberDTO) authentication.getPrincipal(); // getPrincipal : 인증된 사용자 정보 가져오기
-
+        AuthMemberDTO authMember = (AuthMemberDTO) authentication.getPrincipal();
         boolean fromSocial = authMember.isFromSocial();
 
-        log.info("Need Modify Member?" + fromSocial);
+        log.info("Need Modify Member? " + fromSocial);
+        log.info("AuthMemberDTO: " + authMember); // 추가된 로그
 
-        boolean passwordResult = passwordEncoder.matches("1111", authMember.getPassword()); // 패스워드가 1111이라면 회원수정 페이지로 이동
+        Member member = memberRepository.findByEmail(authMember.getEmail(), fromSocial).orElse(null);
+        log.info("Member: " + member); // 추가된 로그
 
-        if (fromSocial && passwordResult) {
-            // 비밀번호가 1111이면 수정 페이지로 리다이렉트
-            redirectStrategy.sendRedirect(request, response, "/member/modify?from=social");
+        if (member == null) {
+            redirectStrategy.sendRedirect(request, response, "/member/socialRegister?email=" + authMember.getEmail() + "&name=" + authMember.getName());
+        } else if (fromSocial) {
+            redirectStrategy.sendRedirect(request, response, "/member/socialRegister?email=" + authMember.getEmail() + "&name=" + authMember.getName());
         } else {
-            // 비밀번호가 1111이 아니면 /sample/member로 리다이렉트
-            redirectStrategy.sendRedirect(request, response, "/sample/member");
+            boolean passwordResult = passwordEncoder.matches("1111", member.getPassword());
+            if (passwordResult) {
+                redirectStrategy.sendRedirect(request, response, "/member/modify");
+            } else {
+                redirectStrategy.sendRedirect(request, response, "/sample/member");
+            }
         }
-
     }
 }

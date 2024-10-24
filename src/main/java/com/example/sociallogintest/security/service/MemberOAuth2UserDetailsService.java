@@ -45,16 +45,17 @@ public class MemberOAuth2UserDetailsService extends DefaultOAuth2UserService {
         });
 
         String email = null;
-        String phone = "구글소셜로그인"; // 기본 전화번호
-        String id = ""; // 사용자 입력 ID
-        String name = ""; // 사용자 이름
-        String password = "1111"; // 비밀번호 초기값
+        String phone = ""; // 사용자가 입력할 전화번호
+        String id = ""; // 사용자가 입력할 ID
+        String name = ""; // Google에서 가져온 사용자 이름
+        String password = ""; // 사용자가 입력할 비밀번호
 
         // Google 사용자 정보에서 phone을 가져오지 않으므로, 기본값 사용
         // 실제로 전화번호를 가져오고 싶다면 추가적인 API 요청이 필요합니다.
+        // Google 사용자 정보에서 email과 name을 가져오기
         if (clientName.equals("Google")) {
             email = oAuth2User.getAttribute("email");
-            name = oAuth2User.getAttribute("name"); // 이름 가져오기
+            name = oAuth2User.getAttribute("name");
         }
 
         log.info("User attributesZZZ: " + oAuth2User.getAttributes());
@@ -62,10 +63,12 @@ public class MemberOAuth2UserDetailsService extends DefaultOAuth2UserService {
         log.info("emailZZZ: " + email);
         log.info("phoneZZZ: " + phone);
 
-//        Member member = saveSocialMember(email, phone);
-//
-//        return oAuth2User;
+        // 예시로 ID와 비밀번호를 임시로 설정 (실제 구현에서는 이 부분을 UI에서 받아오는 방식으로 수정)
+        id = "test"; // 실제로는 UI에서 받아와야 함
+        password = "1111"; // 실제로는 UI에서 받아와야 함
+        phone = "010-1111-1111"; // 실제로는 UI에서 받아와야 함
 
+        // 사용자가 ID, 비밀번호, 전화번호를 입력하는 페이지로 리다이렉트
         // 회원가입처리
         Member member = saveSocialMember(email, phone, id, password, name);
 

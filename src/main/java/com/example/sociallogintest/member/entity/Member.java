@@ -19,10 +19,7 @@ import java.util.Set;
 public class Member extends BaseEntity {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int userNo;
-
-    @Column(name = "id", length = 36, nullable = false, unique = true)
+    @Column(name = "id", length = 36, nullable = false)
     private String id;
 
     @Column(name = "password", length = 255, nullable = false)

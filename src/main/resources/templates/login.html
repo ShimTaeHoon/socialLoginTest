@@ -40,7 +40,7 @@
             margin-bottom: 15px;
             border: 1px solid #ccc;
             border-radius: 3px;
-            box-sizing: border-box; /* Include padding and border in element's total width and height */
+            box-sizing: border-box;
         }
 
         button {
@@ -61,6 +61,28 @@
             color: red;
             text-align: center;
             margin-bottom: 15px;
+            font-size: 14px;
+        }
+
+        .social-login {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .social-login a {
+            display: inline-block;
+            margin-top: 10px;
+            padding: 10px;
+            background-color: #4285F4;
+            color: white;
+            border-radius: 3px;
+            text-decoration: none;
+            width: 100%;
+            text-align: center;
+        }
+
+        .social-login a:hover {
+            background-color: #357ae8;
         }
     </style>
 </head>
@@ -68,9 +90,8 @@
 <div class="login-container">
     <h1>로그인</h1>
 
-    <!-- 로그인 실패 메시지 표시 (예시) -->
+    <!-- 로그인 실패 메시지 표시 -->
     <div class="error-message">
-        <!-- 여기에 에러 메시지를 삽입 -->
         <span th:text="${param.error}"></span>
     </div>
 
@@ -88,12 +109,15 @@
             <label for="remember">로그인 기억하기</label>
         </div>
         <div>
-            <button type="submit">Login</button>
+            <button type="submit">로그인</button>
         </div>
     </form>
 
-    <h2> 소셜 로그인 </h2>
-    <a href="/oauth2/authorization/google"> Google로 로그인 test </a>
+    <div class="social-login">
+        <h2>소셜 로그인</h2>
+        <p>아직 가입하지 않으셨나요? 소셜 로그인으로 간편하게 회원가입하세요!</p>
+        <a href="/oauth2/authorization/google">Google로 로그인</a>
+    </div>
 </div>
 </body>
 </html>
