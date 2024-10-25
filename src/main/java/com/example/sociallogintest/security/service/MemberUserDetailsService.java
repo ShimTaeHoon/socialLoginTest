@@ -25,7 +25,8 @@
         @Override
         public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
             // 사용자 존재 여부 확인
-            Member member = memberRepository.findByEmail(email, false)
+            // TODO: 이메일을 받아서 해당회원이 있는지 조회 -> 아이디를 받아서 해당회원이 있는지 조회
+            Member member = memberRepository.findByEmail(email)
                     .orElseThrow(() -> new UsernameNotFoundException("User not found: " + email));
 
             log.info("Loaded member: {}", member);

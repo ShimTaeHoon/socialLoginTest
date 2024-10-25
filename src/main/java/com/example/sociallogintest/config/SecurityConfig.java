@@ -58,8 +58,8 @@ public class SecurityConfig {
         // OAuth2 로그인 설정
         http.oauth2Login(oauth2 -> oauth2
                 .loginPage("/login") // 사용자 정의 로그인 페이지 설정
-                .defaultSuccessUrl("/member/socialRegister") // OAuth2 로그인 성공 후 리다이렉션 URL
-                .failureUrl("/login?error") // 로그인 실패 시 리다이렉트 URL
+//                .defaultSuccessUrl("/member/socialRegister") // OAuth2 로그인 성공 후 리다이렉션 URL
+//                .failureUrl("/login?error") // 로그인 실패 시 리다이렉트 URL
                 .successHandler(successHandler(memberRepository)) // 로그인 성공 시 커스텀 핸들러
         );
 

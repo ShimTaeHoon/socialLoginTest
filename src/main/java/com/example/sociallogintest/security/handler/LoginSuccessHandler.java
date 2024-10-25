@@ -36,7 +36,9 @@ public class LoginSuccessHandler implements AuthenticationSuccessHandler {
         log.info("Need Modify Member? " + fromSocial);
         Member member = memberRepository.findByEmail(authMember.getEmail(), fromSocial).orElse(null);
 
-        if (member == null || fromSocial) {
+        // 회원가입 페이지
+        // 해당 이메일 조회 회원의 정보가 없다면 회원가입페이지 이동
+        if (member == null && fromSocial) {
             redirectStrategy.sendRedirect(request, response, "/member/socialRegister?email=" + authMember.getEmail() + "&name=" + authMember.getName());
         } else {
             // 비밀번호 체크 로직은 실제 비밀번호 사용으로 변경
