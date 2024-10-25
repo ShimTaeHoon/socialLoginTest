@@ -49,6 +49,7 @@ public class MemberController {
         member.setName(name);   // Google에서 제공된 이름
         member.setPassword(passwordEncoder.encode(password)); // 비밀번호 암호화
         member.setPhone(phone);
+        member.setRole("ROLE_USER");
         member.setFromSocial(true); // 소셜 회원 여부 설정
         member.addMemberRole(MemberRole.USER); // 기본 권한 부여
 

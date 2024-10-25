@@ -46,7 +46,7 @@ public class Member extends BaseEntity {
     @Column(name = "fromSocial")
     private boolean fromSocial;
 
-    @ElementCollection(fetch = FetchType.LAZY)
+    @ElementCollection(fetch = FetchType.EAGER)
     @Enumerated(EnumType.STRING)
     @Builder.Default
     private Set<MemberRole> roleSet = new HashSet<>();
